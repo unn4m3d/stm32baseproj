@@ -54,7 +54,7 @@ CDEFS+=-DUSE_STDPERIPH_DRIVER
 
 MCUFLAGS= -c -mcpu=cortex-m3 -mthumb -msoft-float -gdwarf-2 -mno-sched-prolog -fno-hosted -mtune=cortex-m3\
 		-march=armv7-m -mfix-cortex-m3-ldrd
-COMMONFLAGS=-O$(OPTLVL) -g -Wall -Werror 
+COMMONFLAGS=-O$(OPTLVL) -g -Wall -Werror
 CFLAGS=$(COMMONFLAGS) $(MCUFLAGS) $(CDEFS)
 
 LDLIBS=
@@ -76,12 +76,12 @@ cstm32lib: $(STM32LIB)
 
 csrc: $(SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) $^
-	
+
 casrc: $(ASRC)
 	$(AS) $(ASFLAGS) $(INCLUDE) $^ -o $(ASRC:%.s=%.o)
 
 ldall: $(OBJ)
-	$(CC) -o $(TARGET).elf $(LDFLAGS) $(LDLIBS) $^ 
+	$(CC) -o $(TARGET).elf $(LDFLAGS) $(LDLIBS) $^
 
 #################
 
@@ -94,8 +94,4 @@ clean:
 	rm -f $(TARGET).bin
 
 load: $(TARGET).bin
-	./flashing_stm32vldiscovery.sh $^
-
-
-
-
+	./flash.sh $^
