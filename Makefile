@@ -2,6 +2,10 @@ TARGET:=Demo
 TOOLCHAIN_PATH:=/usr/bin
 TOOLCHAIN_PREFIX:=arm-none-eabi
 
+ifndef BOARD
+	$(error BOARD is not set)
+endif
+
 CC=$(TOOLCHAIN_PATH)/$(TOOLCHAIN_PREFIX)-gcc
 OBJCOPY=$(TOOLCHAIN_PATH)/$(TOOLCHAIN_PREFIX)-objcopy
 AS=$(TOOLCHAIN_PATH)/$(TOOLCHAIN_PREFIX)-as
@@ -16,7 +20,7 @@ STMLIB:=$(CURDIR)/stm32lib
 CORE:=$(CURDIR)/cmsis
 DEVICE:=$(CURDIR)/device
 STARTUP:=$(CURDIR)/device/startup
-LINKER_SCRIPT:=$(CURDIR)/device/linker/STM32F100RB_FLASH.ld
+LINKER_SCRIPT:=$(CURDIR)/device/linker/$(BOARD).ld
 
 INCLUDE=-I"$(CORE)"
 INCLUDE+=-I"$(DEVICE)"
@@ -58,7 +62,7 @@ COMMONFLAGS=-O$(OPTLVL) -g -Wall -Werror
 CFLAGS=$(COMMONFLAGS) $(MCUFLAGS) $(CDEFS)
 
 LDLIBS=
-LDFLAGS=$(COMMONFLAGS) -fno-exceptions -ffunction-sections -fdata-sections \
+LDFLAGS=$(COMMONFLAGS) -nostdlib -fno-exceptions -ffunction-sections -fdata-sections \
         -nostartfiles -Wl,--gc-sections,-T$(LINKER_SCRIPT)
 
 OBJ = $(CMSIS:%.c=%.o) $(STM32LIB:%.c=%.o) $(SRC:%.c=%.o) $(ASRC:%.s=%.o)
@@ -81,7 +85,7 @@ casrc: $(ASRC)
 	$(AS) $(ASFLAGS) $(INCLUDE) $^ -o $(ASRC:%.s=%.o)
 
 ldall: $(OBJ)
-	$(CC) -o $(TARGET).elf $(LDFLAGS) $(LDLIBS) $^
+	$(CC) -o $(TARGET).elf $(LDFLAGS) $(LDLIBS) -L $(CURDIR)/device/linker/ $^
 
 #################
 
