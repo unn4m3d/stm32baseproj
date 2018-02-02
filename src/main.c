@@ -1,6 +1,4 @@
 #include "stm32f10x.h"
-
-#include "stm32f10x.h"
 int main(void)
 {
 	RCC->APB2ENR |= RCC_APB2Periph_GPIOC; // включаем тактирование порта
